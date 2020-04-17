@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Post;
 use App\User;
+use App\Models\Sermon;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class PostController extends Controller
+class SermonController extends Controller
 {
-    /**
-     * Post displayed per page
-     *
-     * @var integer
-     */
     private $per_page = 5;
 
     /**
@@ -24,8 +19,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('category', 'user')->paginate($this->per_page);
-        return view('users.posts/index', compact('posts'));
+        $sermons = Sermon::with('category', 'user')->paginate($this->per_page);
+        return view('users.sermons/index', compact('sermons'));
     }
 
     /**
@@ -37,8 +32,8 @@ class PostController extends Controller
     public function category(string $slug)
     {
         $category = Category::where('slug', $slug)->first();
-        $posts = Post::with('category', 'user')->where('category_id', $category->id)->paginate($this->per_page);
-        return view('users.posts/index', compact('posts', 'category'));
+        $sermons = Sermon::with('category', 'user')->where('category_id', $category->id)->paginate($this->per_page);
+        return view('users.sermons/index', compact('sermons', 'category'));
     }
 
     /**
@@ -50,8 +45,8 @@ class PostController extends Controller
     public function user(int $id)
     {
         $user = User::find($id);
-        $posts = Post::with('category', 'user')->where('user_id', $user->id)->paginate($this->per_page);
-        return view('users.posts/index', compact('posts', 'user'));
+        $sermons = Sermon::with('category', 'user')->where('user_id', $user->id)->paginate($this->per_page);
+        return view('users.sermons/index', compact('sermons', 'user'));
     }
 
     /**
@@ -62,7 +57,7 @@ class PostController extends Controller
      */
     public function show(string $slug)
     {
-        $post = Post::where('slug', $slug)->first();
-        return view('users.posts/show', compact('post'));
+        $sermon = Sermon::where('slug', $slug)->first();
+        return view('users.sermons/show', compact('sermon'));
     }
 }

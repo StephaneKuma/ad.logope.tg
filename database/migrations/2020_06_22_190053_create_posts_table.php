@@ -28,6 +28,7 @@ class CreatePostsTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->string('title');
+            $table->string('slug');
             $table->string('verse');
             $table->string('image');
             $table->longText('body');
