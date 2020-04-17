@@ -20,6 +20,6 @@ class Sermon extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'semon_tag', 'sermon_id', 'tag_id');
+        return $this->belongsToMany(Tag::class);
     }
 }

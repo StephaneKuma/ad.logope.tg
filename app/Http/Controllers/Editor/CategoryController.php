@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Editor;
 
-use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Brian2694\Toastr\Facades\Toastr;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -15,7 +18,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        return view('editors.categories/index', compact('categories'));
     }
 
     /**
@@ -25,7 +29,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('editors.categories/create');
     }
 
     /**
@@ -34,53 +38,74 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        //
+        $request->validated();
+        $category = new Category();
+        $category->name = $request->name;
+        $category->slug = Str::slug($request->name);
+        $category->save();
+
+        Toastr::success('Succès', "La catégorie $category->name a bien été ajouté.");
+        return view('editors.categories/index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(string $slug)
     {
-        //
+        $category = Category::where('slug', $slug)->first();
+        return view('editors.categories/show', compact('category'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit(string $slug)
     {
-        //
+        $category = Category::where('slug', $slug)->first();
+        return view('editors.categories/edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, string $slug)
     {
-        //
+        $request->validated();
+        $category = Category::where('slug', $slug)->first();
+        $category->name = $request->name;
+        $category->slug = Str::slug($request->name);
+        $category->update();
+
+        Toastr::success('Succès', "La catégorie $category->name a bien été modifié.");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(string $slug)
     {
-        //
+        $category = Category::where('slug', $slug)->first();
+
+        $category->delete();
+
+        Toastr::success('Succès', "La catégorie $category->name a bien été supprimé.");
+        
+        return back();
     }
 }

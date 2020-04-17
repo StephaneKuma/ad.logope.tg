@@ -17,8 +17,8 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug');
-            $table->unsignedInteger('posts_count');
-            $table->unsignedInteger('sermons_count');
+            $table->unsignedInteger('posts_count')->default(0);
+            $table->unsignedInteger('sermons_count')->default(0);
             $table->timestamps();
         });
     }
